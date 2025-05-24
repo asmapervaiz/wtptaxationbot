@@ -538,18 +538,8 @@ def get_response_from_general_knowledge(user_query, country, history=None):
                 ⚠️ Return the result strictly as raw JSON.
     """
     messages = [{"role": "system", "content": system_prompt}]
-    # if history:
-    #     messages += history
     if history:
-        clean_history = []
-        for msg in history:
-            role = msg.get("role", "user")
-            content = msg.get("content", "")
-            if not isinstance(content, str):
-                # Convert dict or any non-string content to string
-                content = json.dumps(content)
-            clean_history.append({"role": role, "content": content})
-        messages += clean_history
+        messages += history
         
     
     messages.append({"role": "user", "content": user_query})
@@ -771,11 +761,7 @@ async def chat_with_bot(
     print(f"printing the results:{result}")
     
 
-    # history.append({"role": "assistant", "content": result["response"]})
-    history.append({
-    "role": "assistant",
-    "content": result["response"] if isinstance(result["response"], str) else json.dumps(result["response"])
-})
+    history.append({"role": "assistant", "content": result["response"]})
     save_user_history(user_id, history)
 
     return JSONResponse(content={
